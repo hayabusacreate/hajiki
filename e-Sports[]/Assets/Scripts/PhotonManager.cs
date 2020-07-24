@@ -14,9 +14,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.GameVersion = "0.1";
         //一秒間に送るパケット数
-        PhotonNetwork.SendRate = 20;
+        PhotonNetwork.SendRate = 120;
         //一秒間にシリアライズする回数。SendRateより多い値にすることはできません
-        PhotonNetwork.SerializationRate = 20;
+        PhotonNetwork.SerializationRate = 120;
         //PhotonNetWarkクラスに、設定上のAppIDを代入
         PhotonNetwork.NetworkingClient.AppId =
             PhotonNetwork.PhotonServerSettings.AppSettings.AppIdRealtime;
