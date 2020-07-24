@@ -6,7 +6,9 @@ using Photon.Pun;
 using Photon.Realtime;
 public enum Unittype
 {
+
     Normal,
+    King,
     High
 }
 public enum PlayerType
@@ -62,7 +64,7 @@ public class Unit : MonoBehaviour,IPunObservable
     // Update is called once per frame
     void Update()
     {
-        //Statas();
+        Statas();
         if (playerType == PlayerType.None)
         {
             renderer.material.color = Color.white;
@@ -106,10 +108,10 @@ public class Unit : MonoBehaviour,IPunObservable
             playerType = PlayerType.None;
             hp = 0;
         }
-        atk = level * maxatk;
-        hp = level * maxhp;
-        scale = level * maxscale;
-        hight = level * maxhight;
+        //atk = level * maxatk;
+        //hp = level * maxhp;
+        //scale = level * maxscale;
+        //hight = level * maxhight;
     }
 
     private void RayCheck()
@@ -376,6 +378,7 @@ public class Unit : MonoBehaviour,IPunObservable
             stream.SendNext(maxscale);
             stream.SendNext(wight);
             stream.SendNext(playerType);
+            stream.SendNext(unittype);
             stream.SendNext(level);
         }
         else
@@ -390,6 +393,7 @@ public class Unit : MonoBehaviour,IPunObservable
             maxscale = (float)stream.ReceiveNext();
             wight = (float)stream.ReceiveNext();
             playerType = (PlayerType)stream.ReceiveNext();
+            unittype = (Unittype)stream.ReceiveNext();
             level = (int)stream.ReceiveNext();
         }
     }
