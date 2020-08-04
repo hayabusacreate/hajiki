@@ -279,7 +279,7 @@ public class Unit : MonoBehaviour,IPunObservable
                 {
                     if (collision.gameObject.GetComponent<Unit>().unittype == unittype)
                     {
-                        Destroy(collision.gameObject);
+                        //Destroy(collision.gameObject);
                         level++;
                     }
                     else
