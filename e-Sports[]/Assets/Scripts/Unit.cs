@@ -363,7 +363,10 @@ public class Unit : MonoBehaviour,IPunObservable
             }
         }
     }
-
+    private void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        info.Sender.TagObject = this.gameObject;
+    }
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if(stream.IsWriting)

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ public enum WallType
     Player1,
     Player2
 }
-public class WallManager : MonoBehaviour
+public class WallManager : MonoBehaviour, IPunObservable
 {
     public int body;
     public GameObject bady;
@@ -51,7 +52,7 @@ public class WallManager : MonoBehaviour
         parentvec = transform.position - parent.transform.position;
         if (Mathf.Floor(childfar / far) > childwallcount)
         {
-            GameObject body = Instantiate(bady, gameObject.transform.position, Quaternion.identity);
+            GameObject body = PhotonNetwork.Instantiate("Cube", gameObject.transform.position, Quaternion.identity);
             //body.transform.parent = parentobj.gameObject.transform;
             childobj = body;
             childwallcount++;
@@ -65,7 +66,7 @@ public class WallManager : MonoBehaviour
         if (Mathf.Floor(childfar / far) < childwallcount)
         {
             childwall.Remove(childwallcount);
-            Destroy(childobjs[childwallcount]);
+            PhotonNetwork.Destroy(childobjs[childwallcount]);
 
 
             childwallcount--;
@@ -74,7 +75,7 @@ public class WallManager : MonoBehaviour
         parantfar = Mathf.Abs(Vector3.Distance(transform.position, parent.transform.position));
         if (Mathf.Floor(parantfar / far) > parentwallcount)
         {
-            GameObject body = Instantiate(bady, gameObject.transform.position, Quaternion.identity);
+            GameObject body = PhotonNetwork.Instantiate("Cube", gameObject.transform.position, Quaternion.identity);
             //body.transform.parent = parentobj.gameObject.transform;
             parentobj = body;
             parentwallcount++;
@@ -88,7 +89,7 @@ public class WallManager : MonoBehaviour
         if (Mathf.Floor(parantfar / far) < parentwallcount)
         {
             parentwall.Remove(parentwallcount);
-            Destroy(parentobjs[parentwallcount]);
+            PhotonNetwork.Destroy(parentobjs[parentwallcount]);
 
 
             parentwallcount--;
@@ -106,5 +107,25 @@ public class WallManager : MonoBehaviour
             childwall[i].hight = (parent.GetComponent<Unit>().hight + child.GetComponent<Unit>().hight) / 2;
         }
         transform.position = (parent.transform.position+child.transform.position)/2;
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(gameObject);
+            stream.SendNext(body);
+            stream.SendNext(parent);
+            stream.SendNext(child);
+            stream.SendNext(wallType);
+        }
+        else
+        {
+            //this.gameObject = (GameObject)stream.ReceiveNext();
+            body = (int)stream.ReceiveNext();
+            parent = (GameObject)stream.ReceiveNext();
+            child = (GameObject)stream.ReceiveNext();
+            wallType = (WallType)stream.ReceiveNext();
+        }
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 using Photon.Realtime;
 using Photon.Pun;
 
-public class QuickMatchExample :  MonoBehaviour, IMatchmakingCallbacks
+public class QuickMatchExample :  MonoBehaviour, IMatchmakingCallbacks, IPunObservable
 {
     public SceneChange scene;
     private bool change;
@@ -66,11 +66,23 @@ public class QuickMatchExample :  MonoBehaviour, IMatchmakingCallbacks
     // Update is called once per frame
     void Update()
     {
-        if (PhotonNetwork.CountOfPlayersInRooms>=0&&!change)
+        if (PhotonNetwork.CountOfPlayers >= maxPlayers&&!change)
         {
             scene.kingcreate=true;
             change = true;
         }
 
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(change);
+        }
+        else
+        {
+            change = (bool)stream.ReceiveNext();
+        }
     }
 }
